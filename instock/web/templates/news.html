@@ -1,0 +1,48 @@
+<!-- templates/news.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>新闻舆情 - InStock</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>📰 新闻舆情</h2>
+        <p class="text-muted">基于 NewsAPI.org 的 A 股核心概念实时舆情</p>
+
+        <!-- 搜索栏 -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <form method="get" action="/instock/news">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="keyword" 
+                               placeholder="输入关键词（如：AI芯片、新能源车）" 
+                               value="{{ keyword }}">
+                        <button class="btn btn-primary" type="submit">🔍 搜索</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 新闻列表 -->
+        {% if news_list %}
+            <div class="row">
+                {% for n in news_list %}
+                    <div class="col-12 mb-3 p-3 border rounded bg-light">
+                        <h5><a href="{{ n.url }}" target="_blank">{{ n.title }}</a></h5>
+                        <p class="text-muted small">{{ n.source }} · {{ n.published_at[:10] }}</p>
+                        <p>{{ n.description or '暂无摘要' }}</p>
+                        <small class="text-muted">关联：{{ n.code }}</small>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                ⚠️ 暂无新闻数据。请先运行每日任务：<br>
+                <code>python instock\job\execute_daily_job.py</code>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
